@@ -12,6 +12,10 @@ public interface StorageWrapper {
 	List<Integer> getInts(int key, String field, String table) throws SQLException, FileNotFoundException;
 	List<String> getStrings(int key, String field, String table) throws SQLException, FileNotFoundException;
 	
-	ResultSet getRow(int key, String keyField, String table) throws SQLException, FileNotFoundException;
-	ResultSet getRows(int key, String keyField, String table) throws SQLException, FileNotFoundException;
+	ResultSet getRow(int key, String field, String table) throws SQLException, FileNotFoundException;
+	ResultSet getRows(int key, String field, String table) throws SQLException, FileNotFoundException;
+	
+	void setInt(String table, String field, int value, String keyField, int key) throws SQLException, FileNotFoundException;
+	void setString(String table, String field, String value, String keyField, int key) throws SQLException, FileNotFoundException;
+	void setRow(List<String> values, String table) throws SQLException, FileNotFoundException;
 }
