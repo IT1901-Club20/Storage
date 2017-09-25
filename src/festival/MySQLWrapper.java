@@ -10,6 +10,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import festival.user.*;
+
 public class MySQLWrapper implements StorageWrapper{
 	private String driver;
 	private String server;
@@ -27,6 +29,15 @@ public class MySQLWrapper implements StorageWrapper{
 		Class.forName("org.gjt.mm.mysql.Driver");
 		this.connection = DriverManager.getConnection(this.db_url, username, password);
 	}
+	
+	private String evaluateInputType(String input) {
+		if (input == null) {
+			return "null";
+		}
+		
+		return "'" + input + "'";
+	}
+
 	
 	//Gamal hjelpeklasse. Ikkje kast den, den kan bli nyttig ein vakker dag!
 	private ResultSet getResultSet(String query) throws SQLException {
@@ -115,15 +126,14 @@ public class MySQLWrapper implements StorageWrapper{
 	public void setInt(String table, String field, int value, String keyField, int key) throws SQLException {
 		Statement stm = this.connection.createStatement();
 		stm.executeUpdate("UPDATE `" + table + "` SET `" + field + "` = " + value + 
-				" WHERE `" + keyField + "` = " + key + ";");
+						  " WHERE `" + keyField + "` = " + key + ";");
 		stm.close();
 	}
 
 	public void setString(String table, String field, String value, String keyField, int key) throws SQLException {
 		Statement stm = this.connection.createStatement();
-
-		//UPDATE `" + table + "` SET `" + field + "` = '" + value + "' WHERE `" + keyField + "` = " + key + ";";
-		stm.executeUpdate("UPDATE `" + table + "` SET `" + field + "` = '" + value + "' WHERE `" + keyField + "` = " + key + ";");
+		stm.executeUpdate("UPDATE `" + table + "` SET `" + field + "` = '" + value +
+						  "' WHERE `" + keyField + "` = " + key + ";");
 		stm.close();
 	}
 	
@@ -138,12 +148,8 @@ public class MySQLWrapper implements StorageWrapper{
 		query.append(" VALUES (");
 		
 		for (int i = 0; i < values.size(); i++) {
-			if (values.get(i) == null) {
-				query.append("null");
-			} else {
-				query.append("'" + values.get(i)  +"'");
-			}
-			
+			query.append(evaluateInputType(values.get(i)));
+						
 			if (i < values.size()-1) {
 				query.append(", ");
 			}
@@ -164,25 +170,22 @@ public class MySQLWrapper implements StorageWrapper{
 		long s = System.nanoTime();
 		MySQLWrapper con = new MySQLWrapper("localhost", "festival", "root", "fish");
 	    
-		con.setInt("user", "type", 99, "id", 770);
+		//con.setInt("user", "type", 99, "id", 770);
 		/*
 		for (int i = 0; i < 1000; i++) {
 			System.out.println(con.getString(1, "email", "user"));
-		}*/
+		}*/		
 		
-		
-		
-		
-		/*List<String> values = new ArrayList<>();
+		List<String> values = new ArrayList<>();
 		
 		values.add(null);
-		values.add("4");
-		values.add("veldig@kapabel.net");
+		values.add("5");
+		values.add("lite@kapabel.net");
 		values.add("hunter3");
-		values.add("2019-09-17 17:44:20");
-		values.add("2020-09-17 17:44:20");
+		values.add("2021-09-17 17:44:20");
+		values.add("2023-09-17 17:44:20");
 		
-		con.setRow(values, "user");*/
+		con.setRow(values, "user");
 		System.out.println("Ran for " + (System.nanoTime() - s)/1000000 + " milliseconds.");	
 	}
 }

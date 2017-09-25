@@ -7,4 +7,8 @@ public class User {
 	User(int id) {
 		this.id = id;
 	}
+	
+	public int getId() {
+		return this.id;
+	}
 }
