@@ -20,7 +20,7 @@ public class MySQLWrapper implements StorageWrapper{
 	
 	private Connection connection;
 	
-	MySQLWrapper(String server, String database, String username, String password) throws SQLException, ClassNotFoundException {
+	MySQLWrapper(String server, String database, String username, String password) throws SQLException, FileNotFoundException, ClassNotFoundException {
 		this.server = server;
 		this.database = database;
 				
@@ -81,9 +81,9 @@ public class MySQLWrapper implements StorageWrapper{
 		return ret;
 	}
 	
-	public List<Integer> getInts(int id, String field, String table) throws SQLException {
-		String query = "SELECT " + field + " FROM user WHERE id = " + id + ";"; //`" + table + "` WHERE `id` = " + id + ";";
-		List<Integer> ret = new ArrayList<Integer>();
+	public ArrayList<Integer> getInts(String field, String table, String keyField, int key) throws SQLException {
+		String query = "SELECT " + field + " FROM " + table + " WHERE " + keyField + " = " + key + ";"; //`" + table + "` WHERE `id` = " + id + ";";
+		ArrayList<Integer> ret = new ArrayList<Integer>();
 		Statement stm = this.connection.createStatement();
 		ResultSet rs = stm.executeQuery(query);
 		
@@ -94,11 +94,11 @@ public class MySQLWrapper implements StorageWrapper{
 		stm.close();
 
 		return ret;
-	}	
+	}
 
-	public List<String> getStrings(int id, String field, String table) throws SQLException {
-		String query = "SELECT " + field + " FROM user WHERE id = " + id + ";"; //`" + table + "` WHERE `id` = " + id + ";";
-		List<String> ret = new ArrayList<String>();
+	public ArrayList<String> getStrings(String field, String table, String keyField, int key) throws SQLException {
+		String query = "SELECT " + field + " FROM " + table + " WHERE " + keyField + " = " + key + ";"; //`" + table + "` WHERE `id` = " + id + ";";
+		ArrayList<String> ret = new ArrayList<String>();
 		Statement stm = this.connection.createStatement();
 		ResultSet rs = stm.executeQuery(query);
 		
@@ -166,15 +166,17 @@ public class MySQLWrapper implements StorageWrapper{
 		//ResultSet rs = stm.executeQuery(query);
 	}
 
-	public static void main(String[] args) throws SQLException, ClassNotFoundException {
+	public static void main(String[] args) throws SQLException, ClassNotFoundException, FileNotFoundException {
 		long s = System.nanoTime();
 		MySQLWrapper con = new MySQLWrapper("localhost", "festival", "root", "fish");
+		
+		System.out.println(con.getStrings("email", "users", "email", 5));
 	    
 		//con.setInt("user", "type", 99, "id", 770);
 		/*
 		for (int i = 0; i < 1000; i++) {
 			System.out.println(con.getString(1, "email", "user"));
-		}*/		
+		}
 		
 		List<String> values = new ArrayList<>();
 		
@@ -185,7 +187,7 @@ public class MySQLWrapper implements StorageWrapper{
 		values.add("2021-09-17 17:44:20");
 		values.add("2023-09-17 17:44:20");
 		
-		con.setRow(values, "user");
+		con.setRow(values, "user");*/
 		System.out.println("Ran for " + (System.nanoTime() - s)/1000000 + " milliseconds.");	
 	}
 }
