@@ -17,6 +17,7 @@ public class Concert {
 	public Concert(int id, Festival festival) {
 		this.id = id;
 		this.festival = festival;
+		this.storage = festival.getStorage();
 	}
 	
 	public String toString() {
